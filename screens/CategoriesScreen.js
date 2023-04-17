@@ -9,6 +9,10 @@ export default function CategoriesScreen(props) {
         title="Go to Meals!"
         onPress={() => props.navigation.navigate("CategoryMeals")}
       />
+      <Button
+        title="Go to Categories!"
+        onPress={() => props.navigation.push("Categories")}
+      />
     </View>
   );
 }

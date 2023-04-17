@@ -9,6 +9,7 @@ export default function CategoryMealsScreen(props) {
         title="Go to Meal Detail!"
         onPress={() => props.navigation.navigate("MealDetail")}
       />
+      <Button title="Go Back" onPress={() => props.navigation.pop()} />
     </View>
   );
 }
