@@ -14,7 +14,11 @@ export default function CategoriesScreen(props) {
     return (
       <TouchableOpacity
         style={styles.gridItem}
-        onPress={() => props.navigation.navigate("CategoryMeals")}
+        onPress={() =>
+          props.navigation.navigate("CategoryMeals", {
+            categoryId: itemData.item.id,
+          })
+        }
       >
         <Text>{itemData.item.title}</Text>
       </TouchableOpacity>
