@@ -13,6 +13,7 @@ export default function CategoryMealsScreen({ route, navigation }) {
   function renderMealItem(itemData) {
     return (
       <MealItem
+        id={itemData.item.id}
         title={itemData.item.title}
         duration={itemData.item.duration}
         complexity={itemData.item.complexity}

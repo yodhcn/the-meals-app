@@ -7,7 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Colors from "./constants/colors";
-import { CATEGORIES } from "./data/dummy-data";
+import { CATEGORIES, MEALS } from "./data/dummy-data";
 import CategoriesScreen from "./screens/CategoriesScreen";
 import CategoryMealsScreen from "./screens/CategoryMealsScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
@@ -71,7 +71,17 @@ export default function App() {
             />
             <Stack.Screen name="Favorites" component={FavoritesScreen} />
             <Stack.Screen name="Filters" component={FiltersScreen} />
-            <Stack.Screen name="MealDetail" component={MealDetailScreen} />
+            <Stack.Screen
+              name="MealDetail"
+              component={MealDetailScreen}
+              options={({ route }) => {
+                const mealId = route.params.mealId;
+                const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+                return {
+                  title: selectedMeal.title,
+                };
+              }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </View>
