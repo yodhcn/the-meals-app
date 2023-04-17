@@ -1,17 +1,26 @@
 import React from "react";
-import { View, Text, Button, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 
 import { CATEGORIES } from "../data/dummy-data";
 
-function renderGridItem(itemData) {
-  return (
-    <View style={styles.gridItem}>
-      <Text>{itemData.item.title}</Text>
-    </View>
-  );
-}
-
 export default function CategoriesScreen(props) {
+  function renderGridItem(itemData) {
+    return (
+      <TouchableOpacity
+        style={styles.gridItem}
+        onPress={() => props.navigation.navigate("CategoryMeals")}
+      >
+        <Text>{itemData.item.title}</Text>
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <FlatList data={CATEGORIES} renderItem={renderGridItem} numColumns={2} />
   );

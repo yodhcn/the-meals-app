@@ -1,11 +1,12 @@
 import React, { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+import Colors from "./constants/colors";
 import CategoriesScreen from "./screens/CategoriesScreen";
 import CategoryMealsScreen from "./screens/CategoryMealsScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
@@ -34,11 +35,23 @@ export default function App() {
 
   return (
     <>
-      {/* <StatusBar style="auto" /> */}
+      <StatusBar style="light" />
       <View style={styles.container} onLayout={onLayoutRootView}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Categories">
-            <Stack.Screen name="Categories" component={CategoriesScreen} />
+            <Stack.Screen
+              name="Categories"
+              component={CategoriesScreen}
+              options={{
+                title: "Meal Categories",
+                headerStyle: {
+                  backgroundColor:
+                    Platform.OS === "android" ? Colors.primaryColor : undefined,
+                },
+                headerTintColor:
+                  Platform.OS === "android" ? "white" : Colors.primaryColor,
+              }}
+            />
             <Stack.Screen
               name="CategoryMeals"
               component={CategoryMealsScreen}
