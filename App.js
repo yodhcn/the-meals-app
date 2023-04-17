@@ -5,6 +5,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   OverflowMenuProvider,
   HeaderButtons,
@@ -22,9 +23,66 @@ import MealDetailScreen from "./screens/MealDetailScreen";
 
 SplashScreen.preventAutoHideAsync();
 
-const Stack = createNativeStackNavigator();
+const MealsStack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
+  function MealsStackScreen() {
+    return (
+      <MealsStack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor:
+              Platform.OS === "android" ? Colors.primaryColor : undefined,
+          },
+          headerTintColor:
+            Platform.OS === "android" ? "white" : Colors.primaryColor,
+        }}
+      >
+        <MealsStack.Screen
+          name="Categories"
+          component={CategoriesScreen}
+          options={{
+            title: "Meal Categories",
+          }}
+        />
+        <MealsStack.Screen
+          name="CategoryMeals"
+          component={CategoryMealsScreen}
+          options={({ route }) => {
+            const catId = route.params.categoryId;
+            const selectedCategory = CATEGORIES.find((cat) => cat.id === catId);
+            return {
+              title: selectedCategory.title,
+            };
+          }}
+        />
+        <MealsStack.Screen
+          name="MealDetail"
+          component={MealDetailScreen}
+          options={({ route }) => {
+            const mealId = route.params.mealId;
+            const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+            return {
+              title: selectedMeal.title,
+              headerRight: () => (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                  <Item
+                    title="Favorite"
+                    iconName="ios-star"
+                    onPress={() => {
+                      console.log("Mark as Favorite!");
+                    }}
+                  />
+                </HeaderButtons>
+              ),
+            };
+          }}
+        />
+      </MealsStack.Navigator>
+    );
+  }
+
   const [fontsLoaded] = useFonts({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
@@ -46,61 +104,10 @@ export default function App() {
       <View style={styles.container} onLayout={onLayoutRootView}>
         <NavigationContainer>
           <OverflowMenuProvider>
-            <Stack.Navigator
-              screenOptions={{
-                headerStyle: {
-                  backgroundColor:
-                    Platform.OS === "android" ? Colors.primaryColor : undefined,
-                },
-                headerTintColor:
-                  Platform.OS === "android" ? "white" : Colors.primaryColor,
-              }}
-            >
-              <Stack.Screen
-                name="Categories"
-                component={CategoriesScreen}
-                options={{
-                  title: "Meal Categories",
-                }}
-              />
-              <Stack.Screen
-                name="CategoryMeals"
-                component={CategoryMealsScreen}
-                options={({ route }) => {
-                  const catId = route.params.categoryId;
-                  const selectedCategory = CATEGORIES.find(
-                    (cat) => cat.id === catId
-                  );
-                  return {
-                    title: selectedCategory.title,
-                  };
-                }}
-              />
-              <Stack.Screen name="Favorites" component={FavoritesScreen} />
-              <Stack.Screen name="Filters" component={FiltersScreen} />
-              <Stack.Screen
-                name="MealDetail"
-                component={MealDetailScreen}
-                options={({ route }) => {
-                  const mealId = route.params.mealId;
-                  const selectedMeal = MEALS.find((meal) => meal.id === mealId);
-                  return {
-                    title: selectedMeal.title,
-                    headerRight: () => (
-                      <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                        <Item
-                          title="Favorite"
-                          iconName="ios-star"
-                          onPress={() => {
-                            console.log("Mark as Favorite!");
-                          }}
-                        />
-                      </HeaderButtons>
-                    ),
-                  };
-                }}
-              />
-            </Stack.Navigator>
+            <Tab.Navigator screenOptions={{ headerShown: false }}>
+              <Tab.Screen name="Meals" component={MealsStackScreen} />
+              <Tab.Screen name="Favorites" component={FavoritesScreen} />
+            </Tab.Navigator>
           </OverflowMenuProvider>
         </NavigationContainer>
       </View>
