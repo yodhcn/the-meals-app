@@ -11,6 +11,7 @@ import {
   HeaderButtons,
   Item,
 } from "react-navigation-header-buttons";
+import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "./constants/colors";
 import HeaderButton from "./components/HeaderButton";
@@ -104,9 +105,42 @@ export default function App() {
       <View style={styles.container} onLayout={onLayoutRootView}>
         <NavigationContainer>
           <OverflowMenuProvider>
-            <Tab.Navigator screenOptions={{ headerShown: false }}>
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                  if (route.name === "Meals") {
+                    return (
+                      <Ionicons
+                        name={
+                          focused ? "ios-restaurant" : "ios-restaurant-outline"
+                        }
+                        size={size}
+                        color={color}
+                      />
+                    );
+                  } else if (route.name === "Favorites") {
+                    return (
+                      <Ionicons
+                        name={focused ? "ios-star" : "ios-star-outline"}
+                        size={size}
+                        color={color}
+                      />
+                    );
+                  }
+                },
+                tabBarInactiveTintColor: "gray",
+                tabBarActiveTintColor: Colors.accentColor,
+                headerShown: false,
+              })}
+            >
               <Tab.Screen name="Meals" component={MealsStackScreen} />
-              <Tab.Screen name="Favorites" component={FavoritesScreen} />
+              <Tab.Screen
+                name="Favorites"
+                component={FavoritesScreen}
+                options={{
+                  tabBarLabel: "Favorites!",
+                }}
+              />
             </Tab.Navigator>
           </OverflowMenuProvider>
         </NavigationContainer>
