@@ -39,18 +39,21 @@ export default function App() {
       <StatusBar style="light" />
       <View style={styles.container} onLayout={onLayoutRootView}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Categories">
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {
+                backgroundColor:
+                  Platform.OS === "android" ? Colors.primaryColor : undefined,
+              },
+              headerTintColor:
+                Platform.OS === "android" ? "white" : Colors.primaryColor,
+            }}
+          >
             <Stack.Screen
               name="Categories"
               component={CategoriesScreen}
               options={{
                 title: "Meal Categories",
-                headerStyle: {
-                  backgroundColor:
-                    Platform.OS === "android" ? Colors.primaryColor : undefined,
-                },
-                headerTintColor:
-                  Platform.OS === "android" ? "white" : Colors.primaryColor,
               }}
             />
             <Stack.Screen
@@ -63,14 +66,6 @@ export default function App() {
                 );
                 return {
                   title: selectedCategory.title,
-                  headerStyle: {
-                    backgroundColor:
-                      Platform.OS === "android"
-                        ? Colors.primaryColor
-                        : undefined,
-                  },
-                  headerTintColor:
-                    Platform.OS === "android" ? "white" : Colors.primaryColor,
                 };
               }}
             />
