@@ -1,20 +1,25 @@
 import React from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 
-import { CATEGORIES } from "../data/dummy-data";
+import { MEALS } from "../data/dummy-data";
 
 export default function CategoryMealsScreen({ route, navigation }) {
   const catId = route.params.categoryId;
-  const selectedCategory = CATEGORIES.find((cat) => cat.id === catId);
+  const displayedMeals = MEALS.filter((meal) =>
+    meal.categoryIds.includes(catId)
+  );
+
+  function renderMealItem(itemData) {
+    return (
+      <View>
+        <Text>{itemData.item.title}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.screen}>
-      <Text>The Category Meals Screen!</Text>
-      <Text>{selectedCategory.title}</Text>
-      <Button
-        title="Go to Meal Detail!"
-        onPress={() => navigation.navigate("MealDetail")}
-      />
-      <Button title="Go Back" onPress={() => navigation.pop()} />
+      <FlatList data={displayedMeals} renderItem={renderMealItem} />
     </View>
   );
 }
