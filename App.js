@@ -7,6 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Colors from "./constants/colors";
+import { CATEGORIES } from "./data/dummy-data";
 import CategoriesScreen from "./screens/CategoriesScreen";
 import CategoryMealsScreen from "./screens/CategoryMealsScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
@@ -55,6 +56,23 @@ export default function App() {
             <Stack.Screen
               name="CategoryMeals"
               component={CategoryMealsScreen}
+              options={({ route }) => {
+                const catId = route.params.categoryId;
+                const selectedCategory = CATEGORIES.find(
+                  (cat) => cat.id === catId
+                );
+                return {
+                  title: selectedCategory.title,
+                  headerStyle: {
+                    backgroundColor:
+                      Platform.OS === "android"
+                        ? Colors.primaryColor
+                        : undefined,
+                  },
+                  headerTintColor:
+                    Platform.OS === "android" ? "white" : Colors.primaryColor,
+                };
+              }}
             />
             <Stack.Screen name="Favorites" component={FavoritesScreen} />
             <Stack.Screen name="Filters" component={FiltersScreen} />
