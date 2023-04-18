@@ -26,6 +26,7 @@ import MealDetailScreen from "./screens/MealDetailScreen";
 SplashScreen.preventAutoHideAsync();
 
 const MealsStack = createNativeStackNavigator();
+const FavoritesStack = createNativeStackNavigator();
 const Tab =
   Platform.OS == "android"
     ? createMaterialBottomTabNavigator()
@@ -88,6 +89,51 @@ export default function App() {
     );
   }
 
+  function FavoritesStackScreen() {
+    return (
+      <FavoritesStack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor:
+              Platform.OS === "android" ? Colors.primaryColor : undefined,
+          },
+          headerTintColor:
+            Platform.OS === "android" ? "white" : Colors.primaryColor,
+        }}
+      >
+        <FavoritesStack.Screen
+          name="Favorites"
+          component={FavoritesScreen}
+          options={{
+            title: "Favorites",
+          }}
+        />
+        <MealsStack.Screen
+          name="MealDetail"
+          component={MealDetailScreen}
+          options={({ route }) => {
+            const mealId = route.params.mealId;
+            const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+            return {
+              title: selectedMeal.title,
+              headerRight: () => (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                  <Item
+                    title="Favorite"
+                    iconName="ios-star"
+                    onPress={() => {
+                      console.log("Mark as Favorite!");
+                    }}
+                  />
+                </HeaderButtons>
+              ),
+            };
+          }}
+        />
+      </FavoritesStack.Navigator>
+    );
+  }
+
   const [fontsLoaded] = useFonts({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
@@ -145,7 +191,7 @@ export default function App() {
               <Tab.Screen name="Meals" component={MealsStackScreen} />
               <Tab.Screen
                 name="Favorites"
-                component={FavoritesScreen}
+                component={FavoritesStackScreen}
                 options={{
                   tabBarLabel: "Favorites!",
                 }}
