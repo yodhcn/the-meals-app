@@ -1,23 +1,35 @@
-import React from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { useLayoutEffect } from "react";
+import { FlatList, StyleSheet } from "react-native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+// https://reactnavigation.org/docs/drawer-actions
+import { DrawerActions } from "@react-navigation/native";
 
 import { CATEGORIES } from "../data/dummy-data";
 import CategoryGridTile from "../components/CategoryGridTile";
+import CustomHeaderButton from "../components/HeaderButton";
 
-export default function CategoriesScreen(props) {
+export default function CategoriesScreen({ navigation }) {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <HeaderButtons left HeaderButtonComponent={CustomHeaderButton}>
+          <Item
+            title="Menu"
+            iconName="ios-menu"
+            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+          />
+        </HeaderButtons>
+      ),
+    });
+  }, [navigation]);
+
   function renderGridItem(itemData) {
     return (
       <CategoryGridTile
         title={itemData.item.title}
         color={itemData.item.color}
         onSelect={() =>
-          props.navigation.navigate("CategoryMeals", {
+          navigation.navigate("CategoryMeals", {
             categoryId: itemData.item.id,
           })
         }

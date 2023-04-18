@@ -5,7 +5,9 @@ import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// https://github.com/vonovak/react-navigation-header-buttons/issues/152
+import { createStackNavigator as createNativeStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -208,7 +210,7 @@ export default function App() {
       <View style={styles.container} onLayout={onLayoutRootView}>
         <NavigationContainer>
           <OverflowMenuProvider>
-            <Drawer.Navigator>
+            <Drawer.Navigator screenOptions={{ headerShown: false }}>
               <Drawer.Screen name="MealsFavTab" component={MealsFavTabScreen} />
               <Drawer.Screen
                 name="FiltersStack"
