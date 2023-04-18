@@ -6,12 +6,13 @@ import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import {
   OverflowMenuProvider,
   HeaderButtons,
   Item,
 } from "react-navigation-header-buttons";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import Colors from "./constants/colors";
 import HeaderButton from "./components/HeaderButton";
@@ -25,7 +26,10 @@ import MealDetailScreen from "./screens/MealDetailScreen";
 SplashScreen.preventAutoHideAsync();
 
 const MealsStack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Tab =
+  Platform.OS == "android"
+    ? createMaterialBottomTabNavigator()
+    : createBottomTabNavigator();
 
 export default function App() {
   function MealsStackScreen() {
@@ -108,13 +112,14 @@ export default function App() {
             <Tab.Navigator
               screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
+                  const iconSize = 25;
                   if (route.name === "Meals") {
                     return (
                       <Ionicons
                         name={
                           focused ? "ios-restaurant" : "ios-restaurant-outline"
                         }
-                        size={size}
+                        size={iconSize}
                         color={color}
                       />
                     );
@@ -122,7 +127,7 @@ export default function App() {
                     return (
                       <Ionicons
                         name={focused ? "ios-star" : "ios-star-outline"}
-                        size={size}
+                        size={iconSize}
                         color={color}
                       />
                     );
@@ -132,6 +137,10 @@ export default function App() {
                 tabBarActiveTintColor: Colors.accentColor,
                 headerShown: false,
               })}
+              activeColor="white"
+              inactiveColor="gray"
+              barStyle={{ backgroundColor: Colors.primaryColor }}
+              shifting={true}
             >
               <Tab.Screen name="Meals" component={MealsStackScreen} />
               <Tab.Screen
