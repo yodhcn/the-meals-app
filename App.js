@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import React, { useCallback } from "react";
 import { StyleSheet, View, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -7,6 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import {
   OverflowMenuProvider,
   HeaderButtons,
@@ -25,26 +27,27 @@ import MealDetailScreen from "./screens/MealDetailScreen";
 
 SplashScreen.preventAutoHideAsync();
 
+const Drawer = createDrawerNavigator();
 const MealsStack = createNativeStackNavigator();
 const FavoritesStack = createNativeStackNavigator();
+const FiltersStack = createNativeStackNavigator();
 const Tab =
   Platform.OS == "android"
     ? createMaterialBottomTabNavigator()
     : createBottomTabNavigator();
 
 export default function App() {
+  const defaultStackNavOptions = {
+    headerStyle: {
+      backgroundColor:
+        Platform.OS === "android" ? Colors.primaryColor : undefined,
+    },
+    headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor,
+  };
+
   function MealsStackScreen() {
     return (
-      <MealsStack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor:
-              Platform.OS === "android" ? Colors.primaryColor : undefined,
-          },
-          headerTintColor:
-            Platform.OS === "android" ? "white" : Colors.primaryColor,
-        }}
-      >
+      <MealsStack.Navigator screenOptions={defaultStackNavOptions}>
         <MealsStack.Screen
           name="Categories"
           component={CategoriesScreen}
@@ -91,16 +94,7 @@ export default function App() {
 
   function FavoritesStackScreen() {
     return (
-      <FavoritesStack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor:
-              Platform.OS === "android" ? Colors.primaryColor : undefined,
-          },
-          headerTintColor:
-            Platform.OS === "android" ? "white" : Colors.primaryColor,
-        }}
-      >
+      <FavoritesStack.Navigator screenOptions={defaultStackNavOptions}>
         <FavoritesStack.Screen
           name="Favorites"
           component={FavoritesScreen}
@@ -108,7 +102,7 @@ export default function App() {
             title: "Favorites",
           }}
         />
-        <MealsStack.Screen
+        <FavoritesStack.Screen
           name="MealDetail"
           component={MealDetailScreen}
           options={({ route }) => {
@@ -134,6 +128,65 @@ export default function App() {
     );
   }
 
+  function FiltersStackScreen() {
+    return (
+      <FiltersStack.Navigator screenOptions={defaultStackNavOptions}>
+        <FiltersStack.Screen
+          name="Filters"
+          component={FiltersScreen}
+          options={{
+            title: "Filters",
+          }}
+        />
+      </FiltersStack.Navigator>
+    );
+  }
+
+  function MealsFavTabScreen() {
+    return (
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            const iconSize = 25;
+            if (route.name === "MealsStack") {
+              return (
+                <Ionicons
+                  name={focused ? "ios-restaurant" : "ios-restaurant-outline"}
+                  size={iconSize}
+                  color={color}
+                />
+              );
+            } else if (route.name === "FavoritesStack") {
+              return (
+                <Ionicons
+                  name={focused ? "ios-star" : "ios-star-outline"}
+                  size={iconSize}
+                  color={color}
+                />
+              );
+            }
+          },
+          tabBarInactiveTintColor: "gray",
+          tabBarActiveTintColor: Colors.accentColor,
+          headerShown: false,
+        })}
+        activeColor="white"
+        inactiveColor="gray"
+        barStyle={{ backgroundColor: Colors.primaryColor }}
+        shifting={true}
+      >
+        <Tab.Screen name="MealsStack" component={MealsStackScreen} />
+        <Tab.Screen
+          name="FavoritesStack"
+          component={FavoritesStackScreen}
+          options={{
+            tabBarLabel: "Favorites!",
+          }}
+        />
+      </Tab.Navigator>
+    );
+  }
+
   const [fontsLoaded] = useFonts({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
@@ -155,48 +208,13 @@ export default function App() {
       <View style={styles.container} onLayout={onLayoutRootView}>
         <NavigationContainer>
           <OverflowMenuProvider>
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                  const iconSize = 25;
-                  if (route.name === "Meals") {
-                    return (
-                      <Ionicons
-                        name={
-                          focused ? "ios-restaurant" : "ios-restaurant-outline"
-                        }
-                        size={iconSize}
-                        color={color}
-                      />
-                    );
-                  } else if (route.name === "Favorites") {
-                    return (
-                      <Ionicons
-                        name={focused ? "ios-star" : "ios-star-outline"}
-                        size={iconSize}
-                        color={color}
-                      />
-                    );
-                  }
-                },
-                tabBarInactiveTintColor: "gray",
-                tabBarActiveTintColor: Colors.accentColor,
-                headerShown: false,
-              })}
-              activeColor="white"
-              inactiveColor="gray"
-              barStyle={{ backgroundColor: Colors.primaryColor }}
-              shifting={true}
-            >
-              <Tab.Screen name="Meals" component={MealsStackScreen} />
-              <Tab.Screen
-                name="Favorites"
-                component={FavoritesStackScreen}
-                options={{
-                  tabBarLabel: "Favorites!",
-                }}
+            <Drawer.Navigator>
+              <Drawer.Screen name="MealsFavTab" component={MealsFavTabScreen} />
+              <Drawer.Screen
+                name="FiltersStack"
+                component={FiltersStackScreen}
               />
-            </Tab.Navigator>
+            </Drawer.Navigator>
           </OverflowMenuProvider>
         </NavigationContainer>
       </View>
