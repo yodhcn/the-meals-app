@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { useCallback } from "react";
-import { StyleSheet, View, Platform } from "react-native";
+import { StyleSheet, Text, View, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -43,6 +43,12 @@ export default function App() {
     headerStyle: {
       backgroundColor:
         Platform.OS === "android" ? Colors.primaryColor : undefined,
+    },
+    headerTitleStyle: {
+      fontFamily: "open-sans-bold",
+    },
+    headerBackTitleStyle: {
+      fontFamily: "open-sans",
     },
     headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor,
   };
@@ -171,18 +177,37 @@ export default function App() {
           tabBarInactiveTintColor: "gray",
           tabBarActiveTintColor: Colors.accentColor,
           headerShown: false,
+          tabBarLabelStyle: {
+            fontFamily: "open-sans",
+          },
         })}
         activeColor="white"
         inactiveColor="gray"
         barStyle={{ backgroundColor: Colors.primaryColor }}
         shifting={true}
       >
-        <Tab.Screen name="MealsStack" component={MealsStackScreen} />
+        <Tab.Screen
+          name="MealsStack"
+          component={MealsStackScreen}
+          options={{
+            tabBarLabel:
+              Platform.OS === "android" ? (
+                <Text style={{ fontFamily: "open-sans" }}>Meals!</Text>
+              ) : (
+                "Meals!"
+              ),
+          }}
+        />
         <Tab.Screen
           name="FavoritesStack"
           component={FavoritesStackScreen}
           options={{
-            tabBarLabel: "Favorites!",
+            tabBarLabel:
+              Platform.OS === "android" ? (
+                <Text style={{ fontFamily: "open-sans-bold" }}>Favorites!</Text>
+              ) : (
+                "Favorites!"
+              ),
           }}
         />
       </Tab.Navigator>
