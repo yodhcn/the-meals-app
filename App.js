@@ -210,11 +210,24 @@ export default function App() {
       <View style={styles.container} onLayout={onLayoutRootView}>
         <NavigationContainer>
           <OverflowMenuProvider>
-            <Drawer.Navigator screenOptions={{ headerShown: false }}>
-              <Drawer.Screen name="MealsFavTab" component={MealsFavTabScreen} />
+            <Drawer.Navigator
+              screenOptions={{
+                headerShown: false,
+                drawerActiveTintColor: Colors.accentColor,
+                drawerLabelStyle: {
+                  fontFamily: "open-sans-bold",
+                },
+              }}
+            >
+              <Drawer.Screen
+                name="MealsFavTab"
+                component={MealsFavTabScreen}
+                options={{ drawerLabel: "Meals" }}
+              />
               <Drawer.Screen
                 name="FiltersStack"
                 component={FiltersStackScreen}
+                options={{ drawerLabel: "Filters" }}
               />
             </Drawer.Navigator>
           </OverflowMenuProvider>
