@@ -4,9 +4,10 @@ import {
   Text,
   ImageBackground,
   StyleSheet,
-  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+
+import DefaultText from "./DefaultText";
 
 export default function MealItem(props) {
   const navigation = useNavigation();
@@ -37,9 +38,9 @@ export default function MealItem(props) {
             </ImageBackground>
           </View>
           <View style={{ ...styles.mealRow, ...styles.mealDetail }}>
-            <Text>{props.duration}</Text>
-            <Text>{props.complexity.toUpperCase()}</Text>
-            <Text>{props.affordability.toUpperCase()}</Text>
+            <DefaultText>{props.duration}</DefaultText>
+            <DefaultText>{props.complexity.toUpperCase()}</DefaultText>
+            <DefaultText>{props.affordability.toUpperCase()}</DefaultText>
           </View>
         </View>
       </Pressable>
