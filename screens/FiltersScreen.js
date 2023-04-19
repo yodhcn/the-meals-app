@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useEffect, useCallback } from "react";
 import { View, Text, StyleSheet, Switch, Platform } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 // https://reactnavigation.org/docs/drawer-actions
@@ -21,11 +21,22 @@ function FilterSwitch(props) {
   );
 }
 
-export default function FiltersScreen({ navigation }) {
+export default function FiltersScreen({ navigation, route }) {
   const [isGlutenFree, setIsGlutenFree] = useState(false);
   const [isLactosFree, setIsLactosFree] = useState(false);
   const [isVeganFree, setIsVeganFree] = useState(false);
   const [isVegetarianFree, setIsVegetarianFree] = useState(false);
+
+  const saveFilters = useCallback(() => {
+    const appliedFilters = {
+      glutenFree: isGlutenFree,
+      lactosFree: isLactosFree,
+      veganFree: isVeganFree,
+      vegetarianFree: isVegetarianFree,
+    };
+
+    console.log(appliedFilters);
+  }, [isGlutenFree, isLactosFree, isVeganFree, isVegetarianFree]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -38,8 +49,25 @@ export default function FiltersScreen({ navigation }) {
           />
         </HeaderButtons>
       ),
+      headerRight: () => (
+        <HeaderButtons left HeaderButtonComponent={CustomHeaderButton}>
+          <Item
+            title="Save"
+            iconName="ios-save"
+            onPress={() => {
+              console.log(route.params);
+              route.params.save();
+            }}
+          />
+        </HeaderButtons>
+      ),
     });
-  }, [navigation]);
+  }, [navigation, route]);
+
+  useEffect(() => {
+    console.log("set route params");
+    navigation.setParams({ save: saveFilters });
+  }, [saveFilters]);
 
   return (
     <View style={styles.screen}>
