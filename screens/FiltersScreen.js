@@ -24,19 +24,19 @@ function FilterSwitch(props) {
 export default function FiltersScreen({ navigation, route }) {
   const [isGlutenFree, setIsGlutenFree] = useState(false);
   const [isLactosFree, setIsLactosFree] = useState(false);
-  const [isVeganFree, setIsVeganFree] = useState(false);
-  const [isVegetarianFree, setIsVegetarianFree] = useState(false);
+  const [isVegan, setIsVegan] = useState(false);
+  const [isVegetarian, setIsVegetarian] = useState(false);
 
   const saveFilters = useCallback(() => {
     const appliedFilters = {
       glutenFree: isGlutenFree,
       lactosFree: isLactosFree,
-      veganFree: isVeganFree,
-      vegetarianFree: isVegetarianFree,
+      vegan: isVegan,
+      vegetarian: isVegetarian,
     };
 
     console.log(appliedFilters);
-  }, [isGlutenFree, isLactosFree, isVeganFree, isVegetarianFree]);
+  }, [isGlutenFree, isLactosFree, isVegan, isVegetarian]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -83,14 +83,14 @@ export default function FiltersScreen({ navigation, route }) {
         onChange={(newValue) => setIsLactosFree(newValue)}
       />
       <FilterSwitch
-        lable="Vegan-free"
-        state={isVeganFree}
-        onChange={(newValue) => setIsVeganFree(newValue)}
+        lable="Vegan"
+        state={isVegan}
+        onChange={(newValue) => setIsVegan(newValue)}
       />
       <FilterSwitch
-        lable="Vegetarian-free"
-        state={isVegetarianFree}
-        onChange={(newValue) => setIsVegetarianFree(newValue)}
+        lable="Vegetarian"
+        state={isVegetarian}
+        onChange={(newValue) => setIsVegetarian(newValue)}
       />
     </View>
   );
