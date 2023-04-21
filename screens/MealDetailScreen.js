@@ -1,15 +1,10 @@
-import React from "react";
-import {
-  ScrollView,
-  Image,
-  View,
-  Text,
-  Button,
-  StyleSheet,
-} from "react-native";
+import { useLayoutEffect, useCallback } from "react";
+import { ScrollView, Image, View, Text, StyleSheet } from "react-native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
-import { MEALS } from "../data/dummy-data";
+import HeaderButton from "../components/HeaderButton";
 import DefaultText from "../components/DefaultText";
+import { useBoundStore } from "../stores/useBoundStore";
 
 function ListItem(props) {
   return (
@@ -19,8 +14,44 @@ function ListItem(props) {
   );
 }
 
-export default function MealDetailScreen({ route }) {
-  const selectedMeal = MEALS.find((meal) => meal.id === route.params.mealId);
+export default function MealDetailScreen({ navigation, route }) {
+  const mealId = route.params.mealId;
+
+  const selectedMeal = useBoundStore(
+    useCallback(
+      (state) => state.meals.find((meal) => meal.id === mealId),
+      [mealId]
+    )
+  );
+
+  const toggleFavoriteMeal = useBoundStore((state) => state.toggleFavoriteMeal);
+
+  const toggleFavoriteMealHandler = useCallback(
+    () => toggleFavoriteMeal(selectedMeal.id),
+    [toggleFavoriteMeal, selectedMeal.id]
+  );
+
+  const selectedMealIsFavorite = useBoundStore(
+    useCallback(
+      (state) => state.favoriteMeals.some((meal) => meal.id === mealId),
+      [mealId]
+    )
+  );
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: selectedMeal.title,
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item
+            title="Favorite"
+            iconName={selectedMealIsFavorite ? "ios-star" : "ios-star-outline"}
+            onPress={toggleFavoriteMealHandler}
+          />
+        </HeaderButtons>
+      ),
+    });
+  }, [navigation, selectedMeal.id, selectedMeal.title, selectedMealIsFavorite]);
 
   return (
     <ScrollView>

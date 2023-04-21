@@ -4,7 +4,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 // https://reactnavigation.org/docs/drawer-actions
 import { DrawerActions } from "@react-navigation/native";
 
-import { MEALS } from "../data/dummy-data";
+import { useBoundStore } from "../stores/useBoundStore";
 import MealList from "../components/MealList";
 import CustomHeaderButton from "../components/HeaderButton";
 
@@ -23,7 +23,7 @@ export default function FavoritesScreen({ navigation }) {
     });
   }, [navigation]);
 
-  const favMeals = MEALS.filter((meal) => meal.id === "m1" || meal.id == "m2");
+  const favMeals = useBoundStore((state) => state.favoriteMeals);
   return <MealList listData={favMeals} />;
 }
 

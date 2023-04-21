@@ -74,28 +74,7 @@ export default function App() {
             };
           }}
         />
-        <MealsStack.Screen
-          name="MealDetail"
-          component={MealDetailScreen}
-          options={({ route }) => {
-            const mealId = route.params.mealId;
-            const selectedMeal = MEALS.find((meal) => meal.id === mealId);
-            return {
-              title: selectedMeal.title,
-              headerRight: () => (
-                <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                  <Item
-                    title="Favorite"
-                    iconName="ios-star"
-                    onPress={() => {
-                      console.log("Mark as Favorite!");
-                    }}
-                  />
-                </HeaderButtons>
-              ),
-            };
-          }}
-        />
+        <MealsStack.Screen name="MealDetail" component={MealDetailScreen} />
       </MealsStack.Navigator>
     );
   }
@@ -110,28 +89,7 @@ export default function App() {
             title: "Favorites",
           }}
         />
-        <FavoritesStack.Screen
-          name="MealDetail"
-          component={MealDetailScreen}
-          options={({ route }) => {
-            const mealId = route.params.mealId;
-            const selectedMeal = MEALS.find((meal) => meal.id === mealId);
-            return {
-              title: selectedMeal.title,
-              headerRight: () => (
-                <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                  <Item
-                    title="Favorite"
-                    iconName="ios-star"
-                    onPress={() => {
-                      console.log("Mark as Favorite!");
-                    }}
-                  />
-                </HeaderButtons>
-              ),
-            };
-          }}
-        />
+        <FavoritesStack.Screen name="MealDetail" component={MealDetailScreen} />
       </FavoritesStack.Navigator>
     );
   }
