@@ -1,9 +1,10 @@
-import { useLayoutEffect, useState, useEffect, useCallback } from "react";
+import { useLayoutEffect, useState, useCallback, useRef } from "react";
 import { View, Text, StyleSheet, Switch, Platform } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 // https://reactnavigation.org/docs/drawer-actions
-import { DrawerActions } from "@react-navigation/native";
+import { DrawerActions, useFocusEffect } from "@react-navigation/native";
 
+import { useBoundStore } from "../stores/useBoundStore";
 import CustomHeaderButton from "../components/HeaderButton";
 import Colors from "../constants/colors";
 
@@ -22,20 +23,31 @@ function FilterSwitch(props) {
 }
 
 export default function FiltersScreen({ navigation, route }) {
+  console.log("render...");
+
   const [isGlutenFree, setIsGlutenFree] = useState(false);
   const [isLactosFree, setIsLactosFree] = useState(false);
   const [isVegan, setIsVegan] = useState(false);
   const [isVegetarian, setIsVegetarian] = useState(false);
+  // cache savedFilters
+  const savedFiltersRef = useRef({
+    glutenFree: false,
+    lactosFree: false,
+    vegan: false,
+    vegetarian: false,
+  });
 
-  const saveFilters = useCallback(() => {
+  const setMealFilters = useBoundStore((state) => state.setMealFilters);
+
+  const saveFiltersHandler = useCallback(() => {
     const appliedFilters = {
       glutenFree: isGlutenFree,
       lactosFree: isLactosFree,
       vegan: isVegan,
       vegetarian: isVegetarian,
     };
-
-    console.log(appliedFilters);
+    setMealFilters(appliedFilters);
+    savedFiltersRef.current = appliedFilters;
   }, [isGlutenFree, isLactosFree, isVegan, isVegetarian]);
 
   useLayoutEffect(() => {
@@ -51,23 +63,21 @@ export default function FiltersScreen({ navigation, route }) {
       ),
       headerRight: () => (
         <HeaderButtons left HeaderButtonComponent={CustomHeaderButton}>
-          <Item
-            title="Save"
-            iconName="ios-save"
-            onPress={() => {
-              console.log(route.params);
-              route.params.save();
-            }}
-          />
+          <Item title="Save" iconName="ios-save" onPress={saveFiltersHandler} />
         </HeaderButtons>
       ),
     });
-  }, [navigation, route]);
+  }, [navigation, saveFiltersHandler]);
 
-  useEffect(() => {
-    console.log("set route params");
-    navigation.setParams({ save: saveFilters });
-  }, [saveFilters]);
+  useFocusEffect(
+    useCallback(() => {
+      const savedFilters = savedFiltersRef.current;
+      setIsGlutenFree(savedFilters.glutenFree);
+      setIsLactosFree(savedFilters.lactosFree);
+      setIsVegan(savedFilters.vegan);
+      setIsVegetarian(savedFilters.vegetarian);
+    }, [savedFiltersRef])
+  );
 
   return (
     <View style={styles.screen}>

@@ -16,4 +16,23 @@ export const createMealSlice = (set) => ({
         state.favoriteMeals.push(meal);
       }
     }),
+  setMealFilters: (filters) =>
+    set((state) => {
+      state.filteredMeals = state.meals.filter((meal) => {
+        if (filters.glutenFree && !meal.isGlutenFree) {
+          return false;
+        }
+        if (filters.lactosFree && !meal.isLactosFree) {
+          return false;
+        }
+        if (filters.vegan && !meal.isVegan) {
+          return false;
+        }
+        if (filters.vegetarianFree && !meal.isVegetarianFree) {
+          return false;
+        }
+
+        return true;
+      });
+    }),
 });
